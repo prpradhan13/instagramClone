@@ -32,8 +32,6 @@ export default function RootLayout() {
     );
   }
 
-
-
   return (
     <>
       <StatusBar style="light" translucent backgroundColor="transparent"/>

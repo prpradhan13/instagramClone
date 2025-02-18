@@ -1,7 +1,9 @@
 import React from 'react'
 import { Redirect, Stack } from 'expo-router';
-import { useAuth } from '@/src/context/AuthProvider';
 import useAuthStore from '@/src/stores/authStore';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient()
 
 const MainLayout = () => {
   const { isAuthenticated } = useAuthStore();
@@ -11,9 +13,11 @@ const MainLayout = () => {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-    </Stack>
+    <QueryClientProvider client={queryClient}>
+      <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+      </Stack>
+    </QueryClientProvider>
   )
 }
 
