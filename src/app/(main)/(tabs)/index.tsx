@@ -1,12 +1,15 @@
-import { View, Text } from 'react-native'
+import { View, Text, FlatList } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Feather from '@expo/vector-icons/Feather';
 import { useGetUserDetatils } from '@/src/utils/query/userQuery';
 import CircleLoading from '@/src/components/loaders/CircleLoading';
+import PostDetailsCard from '@/src/components/home/PostDetailsCard';
+import { useGetAllPublicPost } from '@/src/utils/query/postsQuery';
 
 const index = () => {
-  const { data, isLoading } = useGetUserDetatils();
+  const { isLoading } = useGetUserDetatils();
+  const { data, isFetching } = useGetAllPublicPost();
 
   if (isLoading) return <CircleLoading />;
   
@@ -17,6 +20,19 @@ const index = () => {
         <Text style={{ fontFamily: "Satisfy" }} className='text-white font-bold text-3xl'>Instagram</Text>
         <Feather name="send" size={26} color="#fff" />
       </View>
+
+      {isFetching ? <CircleLoading /> : 
+        <FlatList 
+          data={data}
+          keyExtractor={data => data.id}
+          contentContainerStyle={{
+            gap: 16,
+          }}
+          renderItem={({ item }) => (
+            <PostDetailsCard key={item.id} postId={item.id} />
+          )}
+        />
+      }
     </SafeAreaView>
   )
 }

@@ -1,4 +1,10 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Feather from "@expo/vector-icons/Feather";
@@ -12,6 +18,10 @@ import { useQuery } from "@tanstack/react-query";
 import useAuthStore from "@/src/stores/authStore";
 import { UserDetailsType } from "@/src/types/auth.type";
 import CircleLoading from "@/src/components/loaders/CircleLoading";
+import {
+  useFollowerCount,
+  useFollowingCount,
+} from "@/src/utils/query/followerQuery";
 
 const ProfileScreen = () => {
   const [select, setSelect] = useState<"post" | "tag">("post");
@@ -21,6 +31,10 @@ const ProfileScreen = () => {
   const { data, isLoading } = useQuery<UserDetailsType>({
     queryKey: ["userDetails", userId],
   });
+
+  const { data: followersCount, isFetching } = useFollowerCount(userId!);
+  const { data: followingCount, isFetching: followingCountFetching } =
+    useFollowingCount(userId!);
 
   if (isLoading) return <CircleLoading />;
   if (!data) return <Text>User not found</Text>;
@@ -66,17 +80,25 @@ const ProfileScreen = () => {
               </View>
 
               <View>
-                <Text className="text-white text-lg font-semibold text-center">
-                  834
-                </Text>
+                {isFetching ? (
+                  <ActivityIndicator size={"small"} color={"#fff"} />
+                ) : (
+                  <Text className="text-white text-lg font-semibold text-center">
+                    {followersCount?.count}
+                  </Text>
+                )}
                 <Text className="text-white">Followeers</Text>
               </View>
 
               <View>
-                <Text className="text-white text-lg font-semibold text-center">
-                  162
-                </Text>
-                <Text className="text-white">Following</Text>
+                {followingCountFetching ? (
+                  <ActivityIndicator size={"small"} color={"#fff"} />
+                ) : (
+                  <Text className="text-white text-lg font-semibold text-center">
+                    {followingCount?.count}
+                  </Text>
+                )}
+                <Text className="text-white">Followeers</Text>
               </View>
             </View>
           </View>
@@ -127,8 +149,10 @@ const ProfileScreen = () => {
           />
         </View>
 
-        <View className="mt-1">{select === "post" && <Posts />}</View>
-        {select === "tag" && <TagPosts />}
+        <View className="mt-1">
+          {select === "post" && <Posts />}
+          {select === "tag" && <TagPosts />}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
