@@ -1,5 +1,5 @@
-import { View, Text, Platform, Dimensions } from "react-native";
-import React from "react";
+import { View, Text, Dimensions, FlatList } from "react-native";
+import React, { useRef, useState } from "react";
 import { useGetPostDetails } from "@/src/utils/query/postsQuery";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import CircleLoading from "../loaders/CircleLoading";
@@ -10,13 +10,19 @@ import LikeCmt from "./LikeCmt";
 const screenWidth = Dimensions.get("screen").width;
 
 const PostDetailsCard = ({ postId }: { postId: string }) => {
-  const { data, isLoading } = useGetPostDetails(postId);
+  const [currentIndex, setCurrentIndex] = useState(1);
+  const { data } = useGetPostDetails(postId);
+  const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
-  if (isLoading) return <CircleLoading />;
   if (!data) return null;
 
   const userImage = data.user_id.avatar_url && cld.image(data.user_id.avatar_url);
-  const postImage = data.content_urls[0] && cld.image(data.content_urls[0]);
+
+  const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
+    if (viewableItems.length > 0) {
+      setCurrentIndex(viewableItems[0].index + 1);
+    }
+  }).current;
 
   return (
     <View className="">
@@ -47,18 +53,31 @@ const PostDetailsCard = ({ postId }: { postId: string }) => {
       {/* Post Image part */}
       <View>
         {data.content_urls.length > 1 && (
-          <View className="absolute bg-[#363636] right-2 top-2 z-10 px-1 rounded-full">
-            <Text className="text-white text-sm">
-              1/{data.content_urls.length}
+          <View className="absolute bg-[#363636] right-2 top-2 z-10 py-1 px-2 rounded-full">
+            <Text className="text-white text-">
+              {currentIndex}/{data.content_urls.length}
             </Text>
           </View>
         )}
-        {postImage && (
-            <AdvancedImage
-              cldImg={postImage}
-              style={{ width: screenWidth, aspectRatio: 1 }}
-            />
-        )}
+
+        <FlatList
+          data={data.content_urls}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => {
+            const postImage = cld.image(item);
+            return (
+              <AdvancedImage
+                cldImg={postImage}
+                style={{ width: screenWidth, aspectRatio: 1 }}
+              />
+            );
+          }}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
+        />
       </View>
 
       <LikeCmt postId={data.id} />

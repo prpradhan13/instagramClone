@@ -14,13 +14,13 @@ const LikeCmt = ({ postId }: { postId: string }) => {
 
   return (
     <View className="mt-4 px-4">
-      <View className="flex-row gap-6 items-center">
+      <View className="flex-row gap-5 items-center">
         {userLiked ? (
-            <FontAwesome name="heart" size={28} color="#ef444" />
+            <FontAwesome name="heart" size={26} color="#ef4444" />
         ) : (
-            <FontAwesome name="heart-o" size={28} color="#fff" />
+            <FontAwesome name="heart-o" size={26} color="#fff" />
         )}
-        <FontAwesome5 name="comment" size={28} color="#fff" />
+        <FontAwesome5 name="comment" size={26} color="#fff" />
         <Feather name="send" size={26} color="#fff" />
       </View>
 

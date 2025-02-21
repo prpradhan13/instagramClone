@@ -22,6 +22,7 @@ import {
   useFollowerCount,
   useFollowingCount,
 } from "@/src/utils/query/followerQuery";
+import { PostsType } from "@/src/types/post.type";
 
 const ProfileScreen = () => {
   const [select, setSelect] = useState<"post" | "tag">("post");
@@ -30,6 +31,10 @@ const ProfileScreen = () => {
 
   const { data, isLoading } = useQuery<UserDetailsType>({
     queryKey: ["userDetails", userId],
+  });
+
+  const { data: userPost, isLoading: postsLoading } = useQuery<PostsType[]>({
+    queryKey: ["getAllPosts", userId],
   });
 
   const { data: followersCount, isFetching } = useFollowerCount(userId!);
@@ -74,7 +79,7 @@ const ProfileScreen = () => {
             <View className="w-[70%] flex-row justify-around">
               <View>
                 <Text className="text-white text-lg font-semibold text-center">
-                  54
+                  {userPost?.length}
                 </Text>
                 <Text className="text-white">Post</Text>
               </View>
@@ -132,7 +137,7 @@ const ProfileScreen = () => {
           <MaterialIcons
             onPress={() => setSelect("post")}
             name="grid-on"
-            size={32}
+            size={30}
             color={`${select === "post" ? "#fff" : "#ababab"}`}
             className={`w-1/2 text-center border-b-2 py-2 ${
               select === "post" ? "border-white" : "border-transparent"
@@ -141,7 +146,7 @@ const ProfileScreen = () => {
           <FontAwesome6
             onPress={() => setSelect("tag")}
             name="user-tag"
-            size={30}
+            size={28}
             color={`${select === "tag" ? "#fff" : "#ababab"}`}
             className={`w-1/2 text-center border-b-2 py-2 ${
               select === "tag" ? "border-white" : "border-transparent"
@@ -149,10 +154,8 @@ const ProfileScreen = () => {
           />
         </View>
 
-        <View className="mt-1">
-          {select === "post" && <Posts />}
-          {select === "tag" && <TagPosts />}
-        </View>
+        {select === "post" && <Posts />}
+        {select === "tag" && <TagPosts />}
       </ScrollView>
     </SafeAreaView>
   );

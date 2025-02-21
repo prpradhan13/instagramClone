@@ -4,7 +4,6 @@ import { supabase } from "../supabase";
 import Toast from "react-native-toast-message";
 import { PostsType } from "@/src/types/post.type";
 
-
 export const useGetUserAllPosts = () => {
     const { user } = useAuthStore();
     const userId = user?.id;
