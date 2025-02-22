@@ -20,6 +20,7 @@ const Layout = () => {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="fullScreenPostView/[indexNumber]" />
     </Stack>
   );
 };

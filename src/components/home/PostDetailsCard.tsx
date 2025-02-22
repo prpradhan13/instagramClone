@@ -2,7 +2,6 @@ import { View, Text, Dimensions, FlatList } from "react-native";
 import React, { useRef, useState } from "react";
 import { useGetPostDetails } from "@/src/utils/query/postsQuery";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import CircleLoading from "../loaders/CircleLoading";
 import { AdvancedImage } from "cloudinary-react-native";
 import { cld } from "@/src/utils/lib/cloudinary";
 import LikeCmt from "./LikeCmt";
@@ -14,18 +13,18 @@ const PostDetailsCard = ({ postId }: { postId: string }) => {
   const { data } = useGetPostDetails(postId);
   const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
-  if (!data) return null;
-
-  const userImage = data.user_id.avatar_url && cld.image(data.user_id.avatar_url);
-
   const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
     if (viewableItems.length > 0) {
       setCurrentIndex(viewableItems[0].index + 1);
     }
   }).current;
 
+  if (!data) return null;
+
+  const userImage = data.user_id.avatar_url && cld.image(data.user_id.avatar_url);
+
   return (
-    <View className="">
+    <View className="flex-1">
       {/* Top Part */}
       <View className="flex-row justify-between p-4 items-center">
         <View className="flex-row items-center gap-2">
@@ -66,15 +65,12 @@ const PostDetailsCard = ({ postId }: { postId: string }) => {
           pagingEnabled
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => {
-            const postImage = cld.image(item);
-            return (
-              <AdvancedImage
-                cldImg={postImage}
-                style={{ width: screenWidth, aspectRatio: 1 }}
-              />
-            );
-          }}
+          renderItem={({ item }) => (
+            <AdvancedImage
+              cldImg={cld.image(item)}
+              style={{ width: screenWidth, height: screenWidth }}
+            />
+          )}
           onViewableItemsChanged={onViewableItemsChanged}
           viewabilityConfig={viewabilityConfig}
         />

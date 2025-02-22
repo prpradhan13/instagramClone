@@ -38,6 +38,7 @@ const index = () => {
         <FlatList
           data={data}
           keyExtractor={(data) => data.id}
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             gap: 16,
           }}
