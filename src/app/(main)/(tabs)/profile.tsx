@@ -9,8 +9,17 @@ import { chunkArray } from "@/src/utils/helperFunctions";
 
 const ProfileScreen = () => {
   const [select, setSelect] = useState<"post" | "tag">("post");
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const { data: userPost, isFetching, refetch } = useGetUserAllPosts();
 
-  const { data: userPost } = useGetUserAllPosts();
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   const groupedPosts = userPost ? chunkArray(userPost, 3) : [];
 
@@ -34,6 +43,8 @@ const ProfileScreen = () => {
           )
         }
         ListEmptyComponent={() => <Text className="text-white">No posts</Text>}
+        refreshing={isRefreshing}
+        onRefresh={onRefresh}
       />
     </SafeAreaView>
   );

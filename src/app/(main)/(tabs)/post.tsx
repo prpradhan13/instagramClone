@@ -63,11 +63,7 @@ const PostScreen = () => {
         onSuccess: (data) => {
           queryClient.setQueryData(
             ["getAllPosts", userId],
-            (oldData: PostsType[] | undefined) => {
-              if (!oldData) {
-                return data;
-              }
-
+            (oldData: PostsType[] = []) => {
               return [...oldData, data];
             }
           );

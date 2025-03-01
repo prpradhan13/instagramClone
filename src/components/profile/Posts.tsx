@@ -10,6 +10,7 @@ interface PostsProps {
 }
 
 const Posts = ({ postItems }: PostsProps) => {
+  if (!postItems || postItems.length === 0) return null;
   return (
     <View className="flex-row">
       {postItems.map((postItem, index) => (
@@ -18,17 +19,19 @@ const Posts = ({ postItems }: PostsProps) => {
           onPress={() => router.push(`/fullScreenPostView/${index}`)}
           style={{ width: "33.33%", padding: 1 }}
         >
-          {postItem.content_urls.length > 1 && (
+          {postItem?.content_urls?.length > 1 && (
             <View className="absolute bg-[#363636] right-2 top-2 z-10 px-1 rounded-full">
               <Text className="text-white text-sm">
                 1/{postItem.content_urls.length}
               </Text>
             </View>
           )}
-          <AdvancedImage
-            cldImg={cld.image(postItem.content_urls[0])}
-            style={{ width: "100%", height: 130 }}
-          />
+          {postItem?.content_urls?.[0] && (
+            <AdvancedImage
+              cldImg={cld.image(postItem.content_urls[0])}
+              style={{ width: "100%", height: 130 }}
+            />
+          )}
         </Pressable>
       ))}
     </View>

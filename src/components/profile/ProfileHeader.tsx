@@ -21,7 +21,7 @@ interface ProfileHeaderProps {
 }
 
 const ProfileHeader = ({ userPostLength, select, setSelect }: ProfileHeaderProps) => {
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const userId = user?.id;
 
   const { data, isLoading } = useQuery<UserDetailsType>({
@@ -41,7 +41,7 @@ const ProfileHeader = ({ userPostLength, select, setSelect }: ProfileHeaderProps
       {/* First Part */}
       <View className="p-4">
         <View className="flex-row justify-between mt-2">
-          <View></View>
+          <Text onPress={logout} className="text-white">LogOut</Text>
           <Text className="text-white font-medium text-lg">
             {data.user_name}
           </Text>
@@ -101,10 +101,11 @@ const ProfileHeader = ({ userPostLength, select, setSelect }: ProfileHeaderProps
           <Text className="text-white font-medium text-lg capitalize">
             {data.full_name}
           </Text>
-          <Text className="text-white">
-            Digital goodies designer @pixsellz 🫡{"\n"}
-            Everything is designed 🔥
-          </Text>
+          {data.bio && (
+            <Text className="text-white">
+              {data.bio}
+            </Text>
+          )}
         </View>
 
         <Pressable className="bg-black border border-[#5a5a5a] my-6 rounded-lg py-1">
