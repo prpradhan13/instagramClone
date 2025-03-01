@@ -12,3 +12,9 @@ export type PostsType = {
     visibility: string;
     created_at: string;
 }
+
+export type CreatePostType = {
+    file: string;
+    captionForPost: string;
+    location: string;
+}

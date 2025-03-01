@@ -1,8 +1,9 @@
 import useAuthStore from "@/src/stores/authStore"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { supabase } from "../supabase";
 import Toast from "react-native-toast-message";
-import { PostsType } from "@/src/types/post.type";
+import { CreatePostType, PostsType } from "@/src/types/post.type";
+import { uploadCloudinary } from "../lib/cloudinary";
 
 export const useGetUserAllPosts = () => {
     const { user } = useAuthStore();
@@ -15,6 +16,7 @@ export const useGetUserAllPosts = () => {
                 .from('posts')
                 .select('*')
                 .eq('user_id', userId)
+                .order('created_at', { ascending: false });
 
             if (error) {
                 Toast.show({
@@ -37,7 +39,8 @@ export const useGetAllPublicPost = () => {
             const { data, error } = await supabase
                 .from('posts')
                 .select('*')
-                .eq('visibility', 'public');
+                .eq('visibility', 'public')
+                .order('created_at', { ascending: false });
             
             if (error) {
                 Toast.show({
@@ -50,7 +53,7 @@ export const useGetAllPublicPost = () => {
             return data;
         }
     });
-}
+};
 
 export const useGetPostDetails = (postId: string) => {
     return useQuery<PostsType | undefined>({
@@ -74,4 +77,41 @@ export const useGetPostDetails = (postId: string) => {
         },
         enabled:!!postId,
     })
-}
+};
+
+export const useCreatePost = () => {
+    const { user } = useAuthStore();
+    const userId = user?.id;
+
+    return useMutation({
+        mutationFn: async ({ postData }: {postData: CreatePostType}) => {
+            const { file, captionForPost, location } = postData;
+
+            const cldResponse: any = await uploadCloudinary(file);
+            const publicId = await cldResponse.public_id;
+
+            if (!publicId) {
+                throw new Error("Failed to upload image");
+            };
+
+            const content_type = cldResponse.resource_type;
+
+            const { data, error } = await supabase
+                .from('posts')
+                .insert({
+                    user_id: userId,
+                    content_type,
+                    content_urls: [publicId],
+                    caption: captionForPost,
+                    location,
+                })
+                .select("*");
+            
+            if (error) {
+                throw new Error("Failed to create post");
+            }
+
+            return data;
+        }
+    })
+};
