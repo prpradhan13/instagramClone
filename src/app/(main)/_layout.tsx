@@ -21,6 +21,9 @@ const Layout = () => {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="fullScreenPostView/[indexNumber]" />
+      <Stack.Screen
+        name="viewStory/[storyUserId]"
+      />
     </Stack>
   );
 };

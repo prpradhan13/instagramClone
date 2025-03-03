@@ -5,6 +5,7 @@ import Feather from "@expo/vector-icons/Feather";
 import CircleLoading from "@/src/components/loaders/CircleLoading";
 import PostDetailsCard from "@/src/components/home/PostDetailsCard";
 import { useGetAllPublicPost } from "@/src/utils/query/postsQuery";
+import Story from "@/src/components/home/Story";
 
 const index = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -32,23 +33,26 @@ const index = () => {
         <Feather name="send" size={26} color="#fff" />
       </View>
 
-      {isFetching ? (
-        <CircleLoading />
-      ) : (
-        <FlatList
-          data={data}
-          keyExtractor={(data) => data.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            gap: 16,
-          }}
-          renderItem={({ item }) => (
-            <PostDetailsCard key={item.id} postId={item.id} />
-          )}
-          refreshing={isRefreshing}
-          onRefresh={onRefresh}
-        />
-      )}
+      <View className="bg-black flex-1">
+        {isFetching ? (
+          <CircleLoading />
+        ) : (
+          <FlatList
+            data={data}
+            keyExtractor={(data) => data.id}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              gap: 16,
+            }}
+            ListHeaderComponent={() => <Story />}
+            renderItem={({ item }) => (
+              <PostDetailsCard key={item.id} postId={item.id} />
+            )}
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+          />
+        )}
+      </View>
     </SafeAreaView>
   );
 };

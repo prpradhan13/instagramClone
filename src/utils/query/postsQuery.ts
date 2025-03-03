@@ -16,7 +16,7 @@ export const useGetUserAllPosts = () => {
                 .from('posts')
                 .select('*')
                 .eq('user_id', userId)
-                .order('created_at', { ascending: false });
+                // .order('created_at', { ascending: false });
 
             if (error) {
                 Toast.show({
@@ -40,7 +40,7 @@ export const useGetAllPublicPost = () => {
                 .from('posts')
                 .select('*')
                 .eq('visibility', 'public')
-                .order('created_at', { ascending: false });
+                // .order('created_at', { ascending: false });
             
             if (error) {
                 Toast.show({
