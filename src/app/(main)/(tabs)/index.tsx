@@ -6,6 +6,7 @@ import CircleLoading from "@/src/components/loaders/CircleLoading";
 import PostDetailsCard from "@/src/components/home/PostDetailsCard";
 import { useGetAllPublicPost } from "@/src/utils/query/postsQuery";
 import Story from "@/src/components/home/Story";
+import { router } from "expo-router";
 
 const index = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -30,7 +31,7 @@ const index = () => {
         >
           Instagram
         </Text>
-        <Feather name="send" size={26} color="#fff" />
+        <Feather onPress={() => router.push('/channels')} name="send" size={26} color="#fff" />
       </View>
 
       <View className="bg-black flex-1">

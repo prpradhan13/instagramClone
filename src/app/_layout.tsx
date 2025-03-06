@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import Toast from 'react-native-toast-message';
 import { ActivityIndicator, View } from "react-native";
 import { initializeAuth } from "@/src/stores/authStore";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
   const [isReady, setIsReady] = useState(false);
@@ -33,12 +34,12 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="light" translucent backgroundColor="transparent"/>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(main)" />
       </Stack>
       <Toast />
-    </>
+    </GestureHandlerRootView>
   );
 }
