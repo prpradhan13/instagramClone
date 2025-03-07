@@ -40,9 +40,8 @@ const useAuthStore = create<AuthState>()(
 );
 
 export const initializeAuth = async () => {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const { data: { session } } = await supabase.auth.getSession();
+  
   useAuthStore.getState().setSession(session);
 
   supabase.auth.onAuthStateChange((_event, session) => {

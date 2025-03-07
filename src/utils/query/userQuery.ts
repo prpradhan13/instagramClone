@@ -8,7 +8,7 @@ export const useGetUserDetatils = () => {
   const { user } = useAuthStore();
   const userId = user?.id;
 
-  return useQuery<UserDetailsType[]>({
+  return useQuery<UserDetailsType>({
     queryKey: ["userDetails", userId],
     queryFn: async () => {
       const { data, error } = await supabase
