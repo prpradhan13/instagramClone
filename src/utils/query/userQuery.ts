@@ -32,7 +32,7 @@ export const useGetUserDetatils = () => {
 };
 
 export const useOtherUserDetatils = (userId: string) => {
-  return useQuery<UserDetailsType[]>({
+  return useQuery<UserDetailsType>({
     queryKey: ["userDetails", userId],
     queryFn: async () => {
       const { data, error } = await supabase

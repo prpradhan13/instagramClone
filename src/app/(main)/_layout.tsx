@@ -24,6 +24,17 @@ const Layout = () => {
       <Stack.Screen name="fullScreenPostView/[indexNumber]" />
       <Stack.Screen name="viewStory/[storyUserId]" />
       <Stack.Screen name="channels" />
+      <Stack.Screen
+        name="allFollowersList"
+        options={{
+          headerShown: true,
+          headerTitle: "All Followers",
+          headerStyle: {
+            backgroundColor: "#121212",
+          },
+          headerTintColor: "#ffffff",
+        }}
+      />
     </Stack>
   );
 };

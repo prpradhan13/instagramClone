@@ -36,7 +36,6 @@ interface CloudinaryOptions {
   transformations?: string;
 }
 
-// utils/getCloudinaryUrl.ts
 export const getCloudinaryUrl = (publicId: string, options: CloudinaryOptions = {}) => {
   const cloudName = process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME;
   const transformations = options?.transformations || "c_fill,w_200,h_200";
