@@ -3,59 +3,63 @@ import { ActivityIndicator, View } from "react-native";
 import { StreamChat } from "stream-chat";
 import { Chat, OverlayProvider } from "stream-chat-expo";
 import { useGetUserDetatils } from "../utils/query/userQuery";
+import { getCloudinaryUrl } from "../utils/lib/cloudinary";
 
 const client = StreamChat.getInstance(process.env.EXPO_PUBLIC_STREAM_API_KEY!);
 
 const ChatProvider = ({ children }: PropsWithChildren) => {
-    const [isReady, setIsReady] = useState(false);
-    const { data } = useGetUserDetatils();
+  const [isReady, setIsReady] = useState(false);
+  const { data } = useGetUserDetatils();
 
   useEffect(() => {
     if (!data) {
-        return;
+      return;
     }
 
     const connect = async () => {
-      await client.connectUser(
-        {
-          id: data.id,
-          name: data?.user_name,
-          image: "https://i.imgur.com/fR9Jz14.png",
-        },
-        client.devToken(data.id)
-      );
+      try {
+        // Generate Cloudinary image URL from publicId
+        const userImage = data.avatar_url
+          ? getCloudinaryUrl(data.avatar_url)
+          : "https://i.imgur.com/fR9Jz14.png";
+          
+          await client.connectUser(
+            {
+              id: data.id,
+              name: data.user_name,
+              image: userImage,
+            },
+            client.devToken(data.id)
+          );
 
-      setIsReady(true);
-
-      // const channel = client.channel("messaging", "the_park", {
-      //   name: "The Park",
-      // });
-
-      // await channel.watch();
+          setIsReady(true);
+      } catch (error) {
+        console.error("Error connecting to Stream:", error);
+      }
     };
 
     connect();
 
     return () => {
-        if (isReady) {
-            client.disconnectUser();
-        }
-        setIsReady(false);
-    }
+      if (isReady) {
+        client.disconnectUser();
+      }
+      setIsReady(false);
+    };
   }, [data?.id]);
 
-  if(!isReady) {
+  if (!isReady) {
     return (
-        <View className="flex-1 bg-[#121212] justify-center items-center">
-            <ActivityIndicator size={'large'} color={'#fff'} />
-        </View>
-    )
+      <View className="flex-1 bg-[#121212] justify-center items-center">
+        <ActivityIndicator size={"large"} color={"#fff"} />
+      </View>
+    );
   }
 
   return (
-      <OverlayProvider>
-        <Chat client={client}>{children}</Chat>
-      </OverlayProvider>
+    <OverlayProvider>
+      <Chat client={client}>{children}</Chat>
+    </OverlayProvider>
   );
 };
 

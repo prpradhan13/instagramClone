@@ -3,7 +3,7 @@ import { upload } from "cloudinary-react-native";
 
 export const cld = new Cloudinary({
   cloud: {
-    cloudName: 'gymaurcode'
+    cloudName: process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME
   },
   url: {
     secure: true
@@ -30,4 +30,16 @@ export const uploadCloudinary = async (file: string) => {
       },
     });
   });
+};
+
+interface CloudinaryOptions {
+  transformations?: string;
+}
+
+// utils/getCloudinaryUrl.ts
+export const getCloudinaryUrl = (publicId: string, options: CloudinaryOptions = {}) => {
+  const cloudName = process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const transformations = options?.transformations || "c_fill,w_200,h_200";
+
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${transformations}/${publicId}`;
 };
