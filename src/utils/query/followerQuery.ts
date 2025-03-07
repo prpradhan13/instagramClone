@@ -11,7 +11,7 @@ export const useFollowerCount = (userId: string) => {
                 .from('followers')
                 .select("follower_id", { count: "exact" })
                 .eq("following_id", userId)
-                .order("created_at", { ascending: false });
+                // .order("created_at", { ascending: false });
 
             if (error) {
                 Toast.show({

@@ -15,13 +15,14 @@ const ChannelsLayout = () => {
       <Stack.Screen
         name="index"
         options={{
-          headerTitle: "Chats",
+          headerTitle: "Messages",
         }}
       />
       <Stack.Screen
         name="[cid]"
         options={{
           headerShown: true,
+          headerTitle: "Chats",
         }}
       />
     </Stack>

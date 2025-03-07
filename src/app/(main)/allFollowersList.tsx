@@ -12,16 +12,17 @@ const AllFollowersList = () => {
   const { data } = useFollowerCount(user?.id!);
 
   return (
-    <FlatList
-      data={data?.followerIds}
-      keyExtractor={(item) => item}
-      contentContainerStyle={{
-        padding: 16,
-        gap: 20,
-        backgroundColor: "#121212"
-      }}
-      renderItem={({ item }) => <UsersList item={item} />}
-    />
+    <View className="flex-1 bg-[#121212]">
+      <FlatList
+        data={data?.followerIds}
+        keyExtractor={(item) => item}
+        contentContainerStyle={{
+          padding: 16,
+          gap: 20,
+        }}
+        renderItem={({ item }) => <UsersList item={item} />}
+      />
+    </View>
   );
 };
 
