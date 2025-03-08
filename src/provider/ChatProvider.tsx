@@ -1,10 +1,10 @@
 import React, { PropsWithChildren, useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
 import { StreamChat } from "stream-chat";
 import { Chat, OverlayProvider } from "stream-chat-expo";
 import { useGetUserDetatils } from "../utils/query/userQuery";
 import { getCloudinaryUrl } from "../utils/lib/cloudinary";
-import { Redirect, router } from "expo-router";
+import { Redirect } from "expo-router";
+import { tokenProvider } from "../utils/tokenProvider";
 
 const client = StreamChat.getInstance(process.env.EXPO_PUBLIC_STREAM_API_KEY!);
 
@@ -30,7 +30,7 @@ const ChatProvider = ({ children }: PropsWithChildren) => {
             name: data.user_name,
             image: userImage,
           },
-          client.devToken(data.id)
+          tokenProvider
         );
 
         setIsReady(true);
