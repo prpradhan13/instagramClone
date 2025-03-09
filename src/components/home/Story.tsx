@@ -22,19 +22,23 @@ const Story = () => {
 
   const pressStory = (storyUserId: string) => {
     router.push(`/viewStory/${storyUserId}`);
-  }
+  };
 
   if (!data) return <Text>User not found</Text>;
 
   const userProfileImage = data.avatar_url && cld.image(data.avatar_url);
 
-  // Filter unique users with stories
-  const uniqueUsersWithStories = storyData?.reduce((acc: StoryType[], item) => {
-    if (!acc.some((story) => story.user_id === item.user_id)) {
-      acc.push(item);
-    }
-    return acc;
-  }, []);
+  const uniqueUsersWithStories = React.useMemo(() => {
+    return storyData?.reduce((acc: StoryType[], item) => {
+      const isStoryExpiry = new Date(item.expires_at).getTime() > Date.now();
+
+      if (isStoryExpiry && !acc.some((story) => story.user_id === item.user_id)) {
+        acc.push(item);
+      }
+
+      return acc;
+    }, []);
+  }, [storyData]);
 
   return (
     <View className="flex-row items-center px-4 mt-2">
@@ -66,14 +70,17 @@ const Story = () => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
             paddingStart: 16,
-            gap: 14
+            gap: 14,
           }}
           renderItem={({ item }) => {
             const storyUserImage =
               item.user.avatar_url && cld.image(item.user.avatar_url);
 
             return (
-              <Pressable onPress={() => pressStory(item.user_id)} className="border-white border-[2px] p-1 rounded-full">
+              <Pressable
+                onPress={() => pressStory(item.user_id)}
+                className="border-white border-[2px] p-1 rounded-full"
+              >
                 {storyUserImage ? (
                   <AdvancedImage
                     cldImg={storyUserImage}

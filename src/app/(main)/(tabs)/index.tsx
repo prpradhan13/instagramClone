@@ -12,6 +12,8 @@ const index = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { data, isFetching, refetch } = useGetAllPublicPost();
 
+  const MemoizedStory = React.memo(Story);
+
   const onRefresh = async () => {
     setIsRefreshing(true);
     try {
@@ -45,7 +47,7 @@ const index = () => {
             contentContainerStyle={{
               gap: 16,
             }}
-            ListHeaderComponent={() => <Story />}
+            ListHeaderComponent={() => <MemoizedStory />}
             renderItem={({ item }) => (
               <PostDetailsCard key={item.id} postId={item.id} />
             )}
