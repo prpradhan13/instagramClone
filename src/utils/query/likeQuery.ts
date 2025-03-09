@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { supabase } from "../supabase";
 import Toast from "react-native-toast-message";
+import useAuthStore from "@/src/stores/authStore";
 
 export const useCountLikes = (postId: string) => {
   return useQuery<{ count: number; userIds: string[] } | undefined>({
@@ -26,3 +27,39 @@ export const useCountLikes = (postId: string) => {
     enabled: !!postId,
   });
 };
+
+export const useLikeCreate = () => {
+  const { user } = useAuthStore();
+
+  return useMutation({
+    mutationFn: async ({ postId, isLiked  }: { postId: string, isLiked?: boolean }) => {
+      if (!user) return;
+
+      if (isLiked) {
+        // Unlike (delete the like)
+        const { error } = await supabase
+          .from("likes")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("post_id", postId);
+
+        if (error) throw new Error("Failed to unlike the post");
+
+        return { id: user.id, action: "unlike" };
+      }
+
+      const { data, error } = await supabase
+        .from("likes")
+        .insert({
+          user_id: user.id,
+          post_id: postId
+        })
+        .select("*")
+        .single();
+
+      if (error) throw new Error(error.message);
+
+      return { id: user.id, action: "like" };
+    }
+  });
+}

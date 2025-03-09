@@ -108,7 +108,7 @@ export const useCreatePost = () => {
                 .select("*");
             
             if (error) {
-                throw new Error("Failed to create post");
+                throw new Error("Failed to create post" + error.message);
             }
 
             return data;
