@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Feather from "@expo/vector-icons/Feather";
@@ -7,8 +7,10 @@ import { useCountLikes, useLikeCreate } from "@/src/utils/query/likeQuery";
 import useAuthStore from "@/src/stores/authStore";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
+import CommentModal from "../modals/CommentModal";
 
 const LikeCmt = ({ postId }: { postId: string }) => {
+  const [cmtModalOpen, setCmtModalOpen] = useState(false);
   const { user } = useAuthStore();
   const { data: likeCount, isFetching } = useCountLikes(postId);
   const { mutate } = useLikeCreate();
@@ -66,7 +68,7 @@ const LikeCmt = ({ postId }: { postId: string }) => {
             color="#fff"
           />
         )}
-        <FontAwesome5 name="comment" size={26} color="#fff" />
+        <FontAwesome5 onPress={() => setCmtModalOpen(true)} name="comment" size={26} color="#fff" />
         <Feather name="send" size={26} color="#fff" />
       </View>
 
@@ -81,6 +83,14 @@ const LikeCmt = ({ postId }: { postId: string }) => {
             People
           </Text>
         </Pressable>
+      )}
+
+      {cmtModalOpen && (
+        <CommentModal 
+          cmtModalOpen={cmtModalOpen}
+          setCmtModalOpen={setCmtModalOpen}
+          postId={postId}
+        />
       )}
     </View>
   );
