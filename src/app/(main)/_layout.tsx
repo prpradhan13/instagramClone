@@ -35,6 +35,12 @@ const Layout = () => {
           headerTintColor: "#ffffff",
         }}
       />
+      <Stack.Screen
+        name="commentmodal"
+        options={{
+          presentation: 'modal',
+        }}
+      />
     </Stack>
   );
 };

@@ -8,6 +8,8 @@ import useAuthStore from "@/src/stores/authStore";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import CommentModal from "../modals/CommentModal";
+import { Link } from 'expo-router';
+import useCommentStore from "@/src/stores/commentStore";
 
 const LikeCmt = ({ postId }: { postId: string }) => {
   const [cmtModalOpen, setCmtModalOpen] = useState(false);
@@ -15,6 +17,8 @@ const LikeCmt = ({ postId }: { postId: string }) => {
   const { data: likeCount, isFetching } = useCountLikes(postId);
   const { mutate } = useLikeCreate();
   const queryClient = useQueryClient();
+
+  const { setPostId } = useCommentStore();
 
   const userLiked = likeCount?.userIds.some((likeU) => likeU === user?.id);
 
@@ -59,7 +63,12 @@ const LikeCmt = ({ postId }: { postId: string }) => {
     <View className="mt-4 px-4">
       <View className="flex-row gap-5 items-center">
         {userLiked ? (
-          <FontAwesome onPress={onPressLike} name="heart" size={26} color="#ef4444" />
+          <FontAwesome
+            onPress={onPressLike}
+            name="heart"
+            size={26}
+            color="#ef4444"
+          />
         ) : (
           <FontAwesome
             onPress={onPressLike}
@@ -68,7 +77,21 @@ const LikeCmt = ({ postId }: { postId: string }) => {
             color="#fff"
           />
         )}
-        <FontAwesome5 onPress={() => setCmtModalOpen(true)} name="comment" size={26} color="#fff" />
+
+        <Link 
+          href={{
+            pathname: "/commentmodal",
+          }} 
+          asChild
+        >
+          <FontAwesome5
+            onPress={() => setPostId(postId)}
+            name="comment"
+            size={26}
+            color="#fff"
+          />
+        </Link>
+
         <Feather name="send" size={26} color="#fff" />
       </View>
 
